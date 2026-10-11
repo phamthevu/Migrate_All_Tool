@@ -49,6 +49,10 @@ The book also covers LINMAP (Ch. 12), Graph Theoretic Analysis (Ch. 17), grey/fu
 
 Install the root `requirements.txt`, then run `python MCDMStudio/main.py`; on Windows use `MCDMStudio/run.bat`. `python -m unittest MCDMStudio.tests.test_methods MCDMStudio.tests.test_stress_methods -v` runs deterministic examples, randomized stress cases, structural-method checks, and audit-source compilation.
 
+## Build the Windows app
+
+On Windows 10/11 with Python 3.10+ and the `py` launcher, double-click `MCDMStudio/build_windows.bat`. It creates an isolated build environment, runs the method tests, builds `MCDMStudio/dist/MCDMStudio.exe`, and copies the TOPSIS/DEMATEL templates and demo workbooks into the adjacent `Templates` folder. Keep that folder beside the executable when moving the app to another computer. See `MCDMStudio/BUILD_WINDOWS.txt` for the short build guide.
+
 Educational implementation: verify assumptions, judgment consistency, and method variants before using results in a study.
 
 ## References

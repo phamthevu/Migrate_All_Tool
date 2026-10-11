@@ -19,6 +19,12 @@ if errorlevel 1 goto :failed
 "%PY%" -m pip install -r "%ROOT%requirements.txt"
 if errorlevel 1 goto :failed
 
+echo.
+echo Running the deterministic MCDMStudio method and stress tests...
+cd /d "%ROOT%"
+"%PY%" -m unittest MCDMStudio.tests.test_methods MCDMStudio.tests.test_stress_methods -q
+if errorlevel 1 goto :failed
+
 call :build DataStudio "%ROOT%DataStudio\project" DemoDataStudio.spec
 if errorlevel 1 goto :failed
 call :research
@@ -45,9 +51,22 @@ for %%A in (DataStudio ResearchStudio MCDMStudio MCDMVisualStudio FuzzyStudio) d
 xcopy "%ROOT%FuzzyStudio\VBA Library" "%ROOT%dist\FuzzyStudio\VBA Library" /E /I /Y >nul
 if errorlevel 1 goto :failed
 
+for %%A in (DataStudio ResearchStudio MCDMStudio MCDMVisualStudio FuzzyStudio) do (
+  if not exist "%ROOT%dist\%%A\%%A.exe" (
+    echo Expected executable is missing: "%ROOT%dist\%%A\%%A.exe"
+    goto :failed
+  )
+)
+for %%A in (SphericalFuzzy QuantumSpherical NeutrosophicZ) do (
+  if not exist "%ROOT%dist\FuzzyStudio\%%A.exe" (
+    echo Expected FuzzyStudio calculator is missing: "%ROOT%dist\FuzzyStudio\%%A.exe"
+    goto :failed
+  )
+)
+
 (
   echo Build complete. Each application has its own directory and shared Templates folder.
-  echo ResearchStudio.exe, MCDMStudio.exe, MCDMVisualStudio.exe, DataStudio.exe, FuzzyStudio.exe
+  echo Run each app from dist\APPNAME\APPNAME.exe.
   echo FuzzyStudio folder also contains SphericalFuzzy.exe, QuantumSpherical.exe and NeutrosophicZ.exe.
 ) > "%ROOT%dist\BUILD_README.txt"
 echo.

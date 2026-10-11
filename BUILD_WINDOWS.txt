@@ -1,21 +1,22 @@
-BUILD ALL FIVE STUDIOS (WINDOWS)
+BUILD THE COMPLETE RESEARCH SUITE (WINDOWS)
 
-Studios
-- ResearchStudio: manage research data collection and projects.
+Apps included
+- ResearchStudio: collect and manage research data.
 - DataStudio: sample data and foundational analyses.
 - FuzzyStudio: practice foundational fuzzy methods.
-- MCDMStudio: guided numeric practice for foundational MCDM methods.
-- MCDMVisualStudio: visualize analysis outputs.
+- MCDMStudio: guided numeric MCDM methods.
+- MCDMVisualStudio: visualize analysis results.
+- FuzzyStudio also builds the SphericalFuzzy, QuantumSpherical and NeutrosophicZ calculators.
 
 Requirements
 - Windows 10/11, 64-bit
-- Python 3.10+ and Windows Python Launcher (py)
-- Internet for the first dependency install
-- Microsoft ODBC Driver 18 only if using ResearchStudio's SQL Server connector
+- Python 3.10+ and the Windows Python Launcher (`py`)
+- Internet access for the first dependency installation
+- Microsoft ODBC Driver 18 only when using ResearchStudio's SQL Server connector
 
-Build
-1. Extract the complete source folder. Keep build_all_windows.bat, requirements.txt, and Templates beside the five app folders.
-2. Run build_all_windows.bat.
-3. Open the matching executable under dist\ResearchStudio, dist\DataStudio, dist\FuzzyStudio, dist\MCDMStudio, or dist\MCDMVisualStudio.
+Build all apps
+1. Extract the full source ZIP. Keep `build_all_windows.bat`, `requirements.txt`, `Templates`, and all five app folders together.
+2. Double-click `build_all_windows.bat` and wait for dependency installation, MCDMStudio tests and all PyInstaller builds to finish.
+3. Run each app from `dist\APPNAME\APPNAME.exe`. The `Templates` folder beside each app must stay in place.
 
-A single root requirements.txt installs the deduplicated dependencies for all five apps and their supported connectors. The batch file builds each app separately and places the shared Templates library beside each executable. Windows builds must be performed on Windows; this workspace is not used to cross-build Windows executables.
+The script creates a shared `.build-venv`, installs the deduplicated dependencies from the root `requirements.txt`, runs the MCDMStudio deterministic and stress tests, then builds all apps and the three fuzzy calculators. Build output is under `dist\`. Packaged users do not need Python. Windows executables must be built on Windows; this source workspace is not a Windows build host.
