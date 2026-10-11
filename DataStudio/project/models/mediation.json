@@ -1,0 +1,203 @@
+{
+  "version": 4,
+  "title": "Mediation",
+  "method": "CB-SEM",
+  "rows": 500,
+  "scale": "CONTINUOUS",
+  "seed": 42,
+  "attempts": 80,
+  "bootstrap": 300,
+  "bootstrap_indirect": true,
+  "vif_max": 5.0,
+  "polynomial_basis": "CENTERED",
+  "criteria": {
+    "CFI": {
+      "direction": "min",
+      "value": 0.9,
+      "required": true
+    },
+    "TLI": {
+      "direction": "min",
+      "value": 0.9,
+      "required": true
+    },
+    "NFI": {
+      "direction": "min",
+      "value": 0.9,
+      "required": true
+    },
+    "GFI": {
+      "direction": "min",
+      "value": 0.9,
+      "required": false
+    },
+    "AGFI": {
+      "direction": "min",
+      "value": 0.9,
+      "required": false
+    },
+    "RMSEA": {
+      "direction": "max",
+      "value": 0.08,
+      "required": true
+    },
+    "SRMR": {
+      "direction": "max",
+      "value": 0.08,
+      "required": true
+    },
+    "CMIN/DF": {
+      "direction": "max",
+      "value": 3.0,
+      "required": true
+    },
+    "Chi-square p": {
+      "direction": "min",
+      "value": 0.05,
+      "required": false
+    },
+    "Loading": {
+      "direction": "min",
+      "value": 0.5,
+      "required": true
+    },
+    "Composite reliability": {
+      "direction": "min",
+      "value": 0.7,
+      "required": true
+    },
+    "AVE": {
+      "direction": "min",
+      "value": 0.5,
+      "required": true
+    },
+    "HTMT": {
+      "direction": "max",
+      "value": 0.85,
+      "required": true
+    },
+    "Fornell-Larcker": {
+      "direction": "min",
+      "value": 1.0,
+      "required": true
+    },
+    "Loading p": {
+      "direction": "max",
+      "value": 0.05,
+      "required": true
+    },
+    "Path p": {
+      "direction": "max",
+      "value": 0.05,
+      "required": true
+    }
+  },
+  "nodes": [
+    {
+      "id": "n1",
+      "name": "X1",
+      "items": 3,
+      "reliable": true,
+      "alpha_min": 0.7,
+      "alpha_max": 0.85,
+      "r2_min": 0.25,
+      "r2_max": 0.49,
+      "x": 180,
+      "y": 160,
+      "r_metric": "R",
+      "indicators": []
+    },
+    {
+      "id": "n2",
+      "name": "X2",
+      "items": 3,
+      "reliable": true,
+      "alpha_min": 0.7,
+      "alpha_max": 0.85,
+      "r2_min": 0.25,
+      "r2_max": 0.49,
+      "x": 180,
+      "y": 360,
+      "r_metric": "R",
+      "indicators": []
+    },
+    {
+      "id": "n4",
+      "name": "M",
+      "items": 3,
+      "reliable": true,
+      "alpha_min": 0.7,
+      "alpha_max": 0.85,
+      "r2_min": 0.12249999999999998,
+      "r2_max": 0.25,
+      "x": 410,
+      "y": 160,
+      "r_metric": "R",
+      "indicators": []
+    },
+    {
+      "id": "n3",
+      "name": "Y",
+      "items": 3,
+      "reliable": true,
+      "alpha_min": 0.7,
+      "alpha_max": 0.85,
+      "r2_min": 0.25,
+      "r2_max": 0.42250000000000004,
+      "x": 730,
+      "y": 250,
+      "r_metric": "R",
+      "indicators": []
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "n1",
+      "target": "n4",
+      "kind": "linear",
+      "moderator": "",
+      "sign": 1,
+      "expected": "significant",
+      "beta_min": 0.02,
+      "beta_max": 0.9,
+      "block": 1
+    },
+    {
+      "id": "e2",
+      "source": "n4",
+      "target": "n3",
+      "kind": "linear",
+      "moderator": "",
+      "sign": 1,
+      "expected": "significant",
+      "beta_min": 0.02,
+      "beta_max": 0.9,
+      "block": 1
+    },
+    {
+      "id": "e3",
+      "source": "n2",
+      "target": "n3",
+      "kind": "linear",
+      "moderator": "",
+      "sign": 1,
+      "expected": "significant",
+      "beta_min": 0.02,
+      "beta_max": 0.9,
+      "block": 1
+    },
+    {
+      "id": "e4",
+      "source": "n1",
+      "target": "n3",
+      "kind": "linear",
+      "moderator": "",
+      "sign": 1,
+      "expected": "significant",
+      "beta_min": 0.01,
+      "beta_max": 0.9,
+      "block": 1
+    }
+  ]
+}

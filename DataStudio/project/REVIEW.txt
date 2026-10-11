@@ -1,0 +1,28 @@
+BẢN 3.0 — THAY ĐỔI VÀ PHẠM VI
+
+MCDM: sinh các Ans từ hồ sơ chung, lọc theo Pearson/Spearman trên mọi cặp;
+Order từ Excel có kiểm tra thứ tự mục tiêu. AHP giữ reciprocal, thêm CI trong report.
+Quanti: reflective latent synthesis, kiểm tra lại trên observed data sau discretize;
+Alpha min/max, EFA X/Y riêng, Pearson, R/R²/Adjusted R², OLS/HC3, VIF.
+CB-SEM: covariance ML fit, Chi-square/df, indices, loading/CR/AVE, HTMT/
+Fornell–Larcker, paths, Heywood và normality chẩn đoán theo hướng dẫn.
+UI: thống nhất theme, các bước rõ, preview/report chooser, scrollbar, worker queue,
+progress/cancel, chặn xuất kết quả cũ khi cấu hình đổi, theo tên Y khi đổi mã nhóm.
+Xuất Excel nguyên tử và gói AMOS SAV/CSV/model specification/validation.
+Dependencies runtime/build đầy đủ; không cần DB driver; Tk là dependency hệ thống.
+
+Các kiểm tra chẩn đoán không nằm trong acceptance gate được ghi rõ trong HUONG_DAN.
+Không coi N/A correlation là đạt. Không tuyên bố kiểm định semopy tương đương mọi
+thiết lập AMOS. Không cố giữ đồng thời mục tiêu alpha/EFA/SEM trái nhau.
+Không viết công thức giả hoặc sửa giá trị trong báo cáo để đổi kết luận.
+
+Tài liệu API tham khảo:
+https://semopy.com/tutorial.html
+https://semopy.com/docs/stats.html
+https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.FactorAnalysis.html
+https://scikit-learn.org/stable/modules/generated/sklearn.decomposition.PCA.html
+https://www.statsmodels.org/stable/regression.html
+
+Kiểm thử backend và tương tác Tk trong Linux đã thực hiện trước đóng gói.
+EXE Windows và kết quả chạy trực tiếp trong IBM SPSS AMOS chưa được kiểm thử.
+Không kèm test/log/build/cache vào gói phát hành.

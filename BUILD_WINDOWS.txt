@@ -1,0 +1,21 @@
+BUILD THE THREE STUDIOS (WINDOWS)
+
+Requirements
+- 64-bit Windows
+- Python 3.10 or newer and the Windows Python Launcher (py)
+- Internet access for the first dependency install
+
+Build
+1. Extract the complete package so build_all_windows.bat and Templates are in the same folder.
+2. Double-click build_all_windows.bat.
+3. When it finishes, open dist\DataStudio\DataStudio.exe,
+   dist\MCDMVisualStudio\MCDMVisualStudio.exe, or
+   dist\FuzzyStudio\FuzzyStudio.exe.
+
+The script builds the three studios and the three calculator executables used by
+FuzzyStudio. Keep each app's Templates folder beside its executable. The source
+package keeps workbook files in the shared Templates\Template and
+Templates\Demo Data folders rather than duplicating them inside the app folders.
+
+The build script and resulting executables are Windows-only. Building them was
+not run in this non-Windows workspace.

@@ -1,0 +1,328 @@
+V5.2 — KHOẢNG ĐỒNG THUẬN MCDM
+Pearson min/max kiểm tra cả giá trị từng ô lẫn điểm nhân tố giữa mọi cặp Ans.
+Spearman rank min/max kiểm tra thứ hạng nhân tố giữa mọi cặp Ans.
+Mặc định Pearson 0,65–0,90; Spearman 0,60–0,95. Initial consensus 0,78 chỉ là
+tham số khởi tạo, không phải tương quan đo được; bộ sinh tự chỉnh theo hai cận.
+Max <1 không chấp nhận Ans trùng hoàn toàn. Spearman max <1 cũng không chấp
+nhận thứ hạng hoàn toàn giống nhau, dù các giá trị số khác nhau.
+AHP vẫn giữ reciprocity, CI/CR; sở thích mỗi người dao động quanh trọng số đã đặt.
+Mở Agreement Summary để đọc min/max thực tế, mục tiêu và từng Range pass.
+Cell Pearson / Factor Pearson / Factor Spearman cho xem từng cặp Ans; các
+đường chéo là tự tương quan và không đưa vào kiểm tra cận trên.
+Hết lượt thử vẫn trả BEST EFFORT và xuất được; ưu tiên gần khoảng yêu cầu nhất,
+sau đó ít kiểm định fail. Không ưu tiên tương quan cao nhất như trước.
+Ít tiêu chí hoặc rank bị buộc chặt có thể không có khoảng khả thi; báo cáo vẫn
+đánh dấu FAIL, không nới ngưỡng tự động. Ans đầu tiên chưa có cặp so sánh ghi N/A.
+Xuất dữ liệu chỉ có CODE sheets; báo cáo kiểm định xuất riêng như trước.
+
+V5.1.1 — TỐC ĐỘ, BOOTSTRAP VÀ XUẤT BEST
+Advanced cho chọn bootstrap 50/100, mặc định 100. Cấu hình sinh cũ >100 được
+chạy tối đa 100, metadata ghi cả số yêu cầu và số thực chạy.
+Mỗi lượt thử kiểm tra điểm trước; không bootstrap mọi candidate thất bại.
+Tối đa 3 lần xác nhận trong vòng tìm kiếm; ứng viên cuối được bootstrap nếu cần.
+Thanh trạng thái tách Attempt x/y và Bootstrap b/B, kèm candidate được chọn.
+Hết lượt thử vẫn có BEST EFFORT và Export Excel. Xem Acceptance / Final Selection.
+Trong Advanced, Cancel task sau khi đã có candidate giữ bản tốt nhất để xuất;
+bootstrap dừng giữa chừng ghi INCOMPLETE, p/CI chưa tính không được coi là đạt.
+Khi đang chạy, nút Export bị khóa; đợi tác vụ xong hoặc Cancel task để nhận best.
+CSV Options cũng cho chọn bootstrap 50 hoặc 100.
+
+V5.1 — SINH DỮ LIỆU THÔNG MINH VÀ BEST EFFORT
+Sinh theo tín hiệu nhân tố, hiệu chỉnh nhiễu và cập nhật tham số từ Alpha/R/beta
+đo được. Có kết quả đạt toàn bộ kiểm định thì dừng sớm.
+Nếu hết Attempts: trả ứng viên có R cao nhất; nếu cùng R thì ít kiểm định fail nhất.
+Mô hình nhiều biến phụ thuộc dùng R nhỏ nhất giữa các phương trình để xếp hạng.
+R vượt min/max vẫn được ghi FAIL, không thay ngưỡng người dùng.
+BEST EFFORT nghĩa là còn kiểm định chưa đạt; mở Acceptance để xem từng chỉ số,
+Generation Search để xem lịch sử, rồi Export Excel vẫn dùng được.
+PLS vẫn chạy bootstrap đầy đủ để đọc p/SE/CI trên ứng viên chưa đạt.
+Nếu mô hình không ước lượng được: vẫn giữ Data, báo Estimation Errors và R=N/A.
+MCDM chọn từng Ans gần khoảng đồng thuận nhất rồi ít kiểm định fail; xem Agreement
+Summary. Không có R hồi quy cho MCDM. Dữ liệu chính vẫn chỉ có CODE sheets.
+CSV Analysis giữ nguyên dữ liệu nhập. Hủy chủ động hoặc đầu vào sai vẫn dừng.
+
+V5 — BA NHÓM GIAO DIỆN & CSV
+MCDM Generator: sinh dữ liệu, trọng số/thứ tự, chuyển đổi, Help.
+Quantitative Generator: Traditional, Advanced, Model Designer.
+Quantitative Analysis: CSV & Results, Model Builder.
+
+NHẬP CSV VÀ DỰNG MÔ HÌNH
+Load CSV bắt buộc chọn Regression / CB-SEM / PLS-SEM trước khi chọn file.
+Có thể bắt đầu sơ đồ trống hoặc giữ mô hình hiện tại. Trong Model Builder,
+Ctrl/Shift chọn các cột rồi kéo lên vùng trống để tạo biến, hoặc lên biến có sẵn
+để gán thêm chỉ báo. Một cột chỉ thuộc một biến. Chọn Connect để vẽ mũi tên;
+Properties chỉnh R/R² min/max và xóa cột đã gán. Undo/Redo phục hồi cả ánh xạ.
+Regression cho phép mỗi biến chỉ là một cột quan sát: alpha/CR/AVE ghi N/A.
+CB/PLS reflective cần 3–10 chỉ báo/biến. Options chỉnh scale, VIF và kiểm định.
+Analyze CSV tính trên dữ liệu nhập đúng một lần, không sinh lại hay sửa để đạt.
+Kết quả không đạt vẫn có thể xuất. Report lưu mapping, checksum nguồn và các
+hàng bị loại nếu chủ động bật Drop incomplete rows; mặc định từ chối missing.
+100–10.000 hàng sau làm sạch, CB tối thiểu 200; tối đa 12 biến /80 chỉ báo.
+CSV tối đa 32 MB /2.000 cột; header không rỗng/trùng, cột sử dụng phải là số.
+Chọn CONTINUOUS nếu dữ liệu không phải số nguyên Likert 1–5 hoặc 1–7.
+Hồi quy CSV dùng OLS/HC3 như Advanced; Pearson riêng với R mô hình.
+Chức năng EFA/KMO/Bartlett vẫn ở sinh Traditional, không thêm EFA riêng cho CSV.
+Hai canvas dùng chung mô hình; đổi mô hình làm kết quả cũ hết hiệu lực.
+
+LƯU PHIÊN & MẪU MÔ HÌNH
+Autosave cấu hình mỗi 15 giây khi không chạy tác vụ. Restore autosave hoặc
+Save/Open session phục hồi cấu hình/sơ đồ/ánh xạ và đường dẫn file nguồn.
+Không lưu dữ liệu CSV hay kết quả hoàn thành vào autosave: giữ file nguồn,
+xuất kết quả cần giữ và chạy lại sau phục hồi. Nguồn thay đổi được cảnh báo
+bằng checksum; nguồn bị mất cần chọn lại. Có bản sao .bak của lần lưu trước.
+Preset có direct, mediation, moderation, nonlinear, null và unreliable predictor.
+Check feasibility báo xung đột và gợi ý; cảnh báo thống kê chỉ là heuristic.
+
+BẢN 5.0 — R RANGE & ENGLISH UI
+UI, Help, tiến trình và thông báo lỗi đều bằng tiếng Anh.
+Advanced có card Outcome targets: mỗi biến có đường vào được chọn R hoặc R²,
+nhập Min/Max. R=√R² là multiple correlation của mô hình, không phải Pearson r
+riêng từng cặp. Ví dụ R=.55–.65 tương ứng R²=.3025–.4225.
+Đổi selector R/R² sẽ đổi cả hai đầu khoảng để giữ mục tiêu tương đương.
+Model Designer → Properties cũng có Target metric / Target minimum / Target maximum.
+JSON vẫn version4, lưu canonical R² và r_metric; đọc được model V4 cũ.
+Giới hạn R² max<.95, tương ứng R max<.97468. Report có cả R và R².
+Rời tab Advanced sẽ áp dụng cấu hình đang nhập; đổi chỉ tiêu thì cần sinh lại.
+Thanh Generate & Validate / Export luôn hiển thị trong Advanced. Có wheel scroll
+trên trang cấu hình và properties; canvas vẫn dùng wheel để zoom.
+
+DEMO DATA STUDIO 5.0
+
+CHẠY / BUILD
+Windows: Python 3.10+ có Tcl/Tk → install.bat → run.bat.
+Các script dùng .venv riêng. CLI: python -m venv .venv; kích hoạt venv;
+python -m pip install -r requirements.txt; python main.py.
+Build DataStudio EXE trên Windows: build.bat → dist/DataStudio.exe.
+Build cả ba studio và các fuzzy calculator: chạy build_all_windows.bat ở thư mục gốc.
+Không cần driver DB. Linux cần tkinter hệ thống (python3-tk), libTk có font Unicode.
+File Excel cấu hình được mở ngoài ứng dụng; không đóng cứng vào EXE.
+
+1. MCDM: ĐỒNG THUẬN
+Mở file mẫu trong Templates/Template/DataStudio/MCDM (có bản trống và ví dụ trong Templates/Demo Data).
+Config: RowName, ColumnName; tên không rỗng/trùng.
+Fuzzy: Lingustic (hỗ trợ Linguistic), Fuzzy, Level, Probability tùy chọn.
+Level cao = đánh giá cao; nhãn/chuỗi fuzzy duy nhất để chuyển đổi hai chiều.
+NORMAL / DELPHI / TOPSIS sinh ma trận đánh giá chữ nhật.
+DEMATEL cần hai trục giống nhau cùng thứ tự, đường chéo = 0.
+AHP cần hai trục giống nhau cùng thứ tự, tối đa 15 tiêu chí; đường chéo=1.
+LING / FUZZY / CRISP: với phương pháp ngoài AHP, CRISP là giá trị Level trong cấu hình.
+Đây là generator đầu vào, chưa tính thứ hạng TOPSIS, trọng số Delphi hay prominence DEMATEL.
+
+Số Ans: 1–1000; Seed mặc định 42; để trống để random.
+Initial consensus 0–1: mức dùng chung ban đầu, tự chỉnh theo khoảng cần đạt.
+Pearson min/max mặc định 0,65–0,90; Spearman min/max mặc định 0,60–0,95.
+Cận trên <1 giúp tránh Ans giống nhau và cùng thứ hạng hoàn toàn.
+Kiểm tra mọi cặp Ans đã sinh; không chỉ so với Ans 1.
+- Pearson ô: dựa trên Level; DEMATEL bỏ đường chéo; AHP dùng log so sánh nửa trên.
+- Pearson/Spearman nhân tố: trung bình Level theo hàng; DEMATEL bỏ đường chéo;
+  AHP dùng eigenvector trọng số thực tế.
+Đánh dấu PASS khi đạt cả min và max trên mọi cặp trước đó; hết lượt trả BEST EFFORT.
+Một Ans hoặc vector hằng có tương quan không xác định → N/A, không ghi giả là 1.
+AHP 2 tiêu chí chỉ có một ô nửa trên: không thể tính Pearson ô, kiểm tra theo trọng số/rank.
+Không dùng trung bình Level để khẳng định thứ hạng MCDM cuối sau thuật toán phân tích.
+
+Advance tùy chọn: High, Low; lấy 1/3 mức trên/dưới của scale (làm tròn lên).
+Tên có trong hai trục áp dụng cả hai; bias hàng ưu tiên cột nếu xung đột.
+Probability chọn theo nhóm mức được phép; tổng nhóm phải >0.
+Probability là trọng số lấy mẫu; dùng hồ sơ chung/lọc kiểm định có thể thay đổi phân phối thực tế.
+Weights tùy chọn: Criterion, Weight; mỗi hàng một lần; Weight dương.
+Order tùy chọn: Criterion, Rank; mỗi hàng một lần; Rank là hoán vị 1..số hàng.
+Rank 1 cao nhất. Tick dùng Order thì trọng số sinh được suy từ Rank (phạm vi 1–5).
+Ứng dụng kiểm tra Spearman so với Order theo mỗi Ans, mặc định ≥0.80.
+Order xung đột High/Low sẽ báo lỗi. Order là thứ tự của hàng, không tự đảo ColumnName.
+Nếu có Weights và Order, tick Order ưu tiên Order; bỏ tick để dùng Weights.
+Trọng số hàng hỗ trợ xu hướng chung cho NORMAL/DELPHI/TOPSIS/DEMATEL.
+Tab Trọng số & thứ tự cho sửa Weight/Probability; thứ tự Rank sửa trong Excel.
+Lưu cấu hình đã chỉnh bằng nút riêng; file gốc không bị sửa nếu không chọn ghi đè.
+
+AHP có thêm CI, CR, trọng số mục tiêu/thực tế và sai lệch tuyệt đối lớn nhất.
+CR: CI/RI; CI=(lambda_max-n)/(n-1); n<=2 CI/CR=0; RI bảng cho 1–15 tiêu chí.
+Trọng số max/min ≤9. Noise log-normal 0–1 cho sai lệch phán đoán trong ma trận;
+sở thích giữa người trả lời có biến thiên riêng để kiểm soát khoảng đồng thuận.
+Tùy chọn làm tròn Saaty 1/9..1/2,1,2..9.
+AHP FUZZY dùng tam giác dương riêng; nghịch đảo (1/u,1/m,1/l); không chia spherical/quantum fuzzy.
+CI/CR luôn tính từ ma trận số; chưa triển khai trọng số Buckley/Chang fuzzy AHP.
+Export Excel chỉ xuất các sheet CODE (hoặc prefix đã chọn), không có Numeric.
+Export validation report xuất riêng Agreement Summary, Factor Scores, Factor
+Pearson/Spearman, metadata/scale/weights/order và trọng số AHP.
+Cấu hình noise/CR/Saaty chỉ hiện khi chọn AHP. Kéo vạch chia hoặc bỏ Show settings
+để mở rộng preview; cấu hình có thanh cuộn cho màn hình nhỏ.
+Cấu hình thay đổi sau khi sinh: phải sinh lại trước khi xuất.
+
+2. QUANTI TRUYỀN THỐNG
+Không cần Excel cấu hình MCDM.
+Khai báo 2–10 nhóm (mã Latin chữ/số, bắt đầu bằng chữ), đúng một nhóm Y.
+Mỗi nhóm 3–10 biến con; tối đa 60 biến con; tên xuất X1_1, X1_2,...
+Số dòng 100–10.000; ít nhất 5 dòng/biến con. Y phải tick Đạt; ít nhất một X đạt.
+Scale LIKERT5 / LIKERT7 là số nguyên 1..5 / 1..7.
+CONTINUOUS là dữ liệu liên tục quanh 4; có thể nằm ngoài 1..7, không phải Likert.
+Mặc định chọn R trong khoảng 0.67–0.78. 400 dòng, 3 X và 1 Y, mỗi nhóm 3 biến con.
+Có thể thêm nhóm không đạt: bỏ tick Đạt.
+
+Chỉ số điều chỉnh: R=√R² (mặc định), R² hoặc Adjusted R².
+Nhập min và max cho chỉ số đã chọn; hệ thống quy về khoảng R² tương ứng để sinh/kiểm tra.
+Báo cáo luôn có R, R² và Adjusted R². R² nội bộ trong (0,0.90).
+Cronbach min/max mặc định 0.70–0.80; VIF phải nhỏ hơn ngưỡng mặc định 2.
+
+NHÓM ĐẠT
+- Cronbach trong khoảng min–max; corrected item-total correlation ≥0.30.
+- Pearson X–Y dương và p<0.05; báo cáo ma trận Construct Pearson.
+- OLS beta dương, p<0.05 và HC3 robust p<0.05; mọi VIF < ngưỡng chọn.
+- R/R²/Adjusted R² đúng khoảng; F test p<0.05.
+NHÓM KHÔNG ĐẠT
+- Alpha < Cronbach min; chưa quy định alpha phải dương.
+- Pearson và hệ số hồi quy X–Y có p≥0.05 (OLS và HC3).
+- Loại khỏi retained EFA/CFA/SEM; vẫn ở dữ liệu gốc và OLS để minh họa null predictor.
+
+EFA chạy riêng các X đạt và riêng Y; không gộp Y có quan hệ cấu trúc mạnh với X
+rồi bắt ép ra số nhân tố độc lập theo Kaiser.
+Mặc định PCA/Varimax có Kaiser normalization: phù hợp bài thực hành SPSS dùng PCA.
+Chọn ML để dùng maximum likelihood common-factor EFA.
+KMO ≥0.60, item KMO ≥0.50, Bartlett p<0.05.
+Loading theo nhóm ≥0.50, chênh tải so với nhóm khác ≥0.20, communality ≥0.30.
+Variance explained ≥50%; số eigenvalue >1 bằng số nhóm trong từng block.
+Factor labels được ghép với nhóm bằng matching, không đổi cột dữ liệu/nhãn câu hỏi.
+PCA và phân tích nhân tố chung là hai cách extraction khác nhau; báo cáo ghi rõ cách dùng.
+Durbin–Watson, Breusch–Pagan, skew/kurtosis residual có báo cáo chẩn đoán;
+chúng không nằm trong acceptance gate. Dữ liệu mô phỏng độc lập theo dòng.
+
+Số biến con nhiều có thể xung đột Alpha max với variance explained ≥50%.
+Trong mô hình equal-loading của generator, PCA k biến con cần Alpha max gần trên
+(k-2)/(k-1); ML với common variance ≥50% cần gần trên k/(k+1).
+Ví dụ 6 biến con + Alpha max 0.80 rất khó/không phù hợp cùng mục tiêu 50%.
+Ứng dụng báo xung đột hoặc hết số lần thử; không giả mạo kiểm định.
+
+3. CB-SEM / AMOS
+Tick CB-SEM trước khi Sinh & kiểm định; yêu cầu ít nhất 200 dòng.
+Scope: reflective constructs, một Y, đường trực tiếp dương từ mọi X đạt đến Y.
+Tab Quanti nhanh dùng mô hình trực tiếp một Y. Dùng Advanced để vẽ mediator,
+nhiều Y và bootstrap tác động gián tiếp. Không hỗ trợ formative / multigroup.
+Các nhóm không đạt được loại khỏi mô hình retained.
+Kiểm định covariance ML dùng semopy MLW; Likert được xử lý xấp xỉ continuous.
+Với dữ liệu ordinal nghiêm ngặt cần mô hình/estimator khác, không khẳng định tương đương WLSMV.
+
+GATE CB-SEM
+- Hội tụ, DoF>0; variances dương; không Heywood; covariance xác định dương.
+- Ngưỡng mặc định: Chi-square/df ≤3; CFI/TLI/NFI ≥0.90; RMSEA/SRMR ≤0.08.
+- GFI/AGFI và Chi-square p chỉ báo cáo mặc định; tick nếu muốn bắt buộc.
+- Mỗi chỉ số có chiều min/max cố định và ô ngưỡng; preset Mặc định / Chặt hơn.
+- SEM Acceptance ghi Actual/Target/Required/Pass theo đúng cấu hình.
+- Loading standardized ≥0.50 và <1; loading tự do p<0.05.
+- Composite reliability ≥0.70; AVE ≥0.50.
+- HTMT ≤0.85; Fornell–Larcker đạt trên từng cặp latent construct.
+- Đường cấu trúc dương và p<0.05.
+- Univariate |skew|≤2, |excess kurtosis|≤7.
+Chi-square statistic, df và p được báo cáo; không bắt buộc chi-square p>0.05.
+GFI/AGFI dùng công thức semopy, không tuyên bố giống triển khai của AMOS.
+Mardia kurtosis/z và số Mahalanobis outlier được báo cáo chẩn đoán, không ép đạt.
+
+Với 4+ biến con và AVE≥0.50, alpha thường trên 0.80; tăng Alpha max (vd 0.85
+cho nhóm 4 biến con) hoặc dùng 3 biến con để nhắm Alpha 0.70–0.80.
+R² cao, reliability thấp và discriminant validity chặt có thể không khả thi cùng lúc.
+Ứng dụng chỉ xuất khi đạt các gate đã nêu; không hứa mọi kiểm định SEM hoặc mọi
+mô hình khác trong AMOS sẽ đạt. Dựng đúng mô hình retained rồi đối chiếu AMOS.
+
+XUẤT
+Excel: Data, Construct Scores, Cronbach/items, EFA summary/loadings/eigenvalues,
+Pearson, Regression summary/paths, Normality/diagnostics, SEM reports (nếu tick),
+Acceptance, Excluded Groups, metadata và đặc tả model.
+Nút Xuất gói AMOS: ZIP gồm demo_data.sav, demo_data.csv, validation.xlsx,
+model_specification.txt (cú pháp semopy để tham khảo khi vẽ AMOS), settings JSON.
+.sav chỉ có dữ liệu observed item; không chèn composite score vào measurement model.
+Nhấn Hủy tác vụ: hủy ở checkpoint, không phải ngắt optimizer ngay giữa lần fit.
+
+4. CHUYỂN ĐỔI
+Load Excel config Fuzzy → mở workbook → chọn hướng → xuất.
+Xử lý mọi sheet; cột đầu là row index theo file xuất ứng dụng.
+Mapping chuỗi chính xác sau strip; giữ số/NA/giá trị chưa có mapping.
+Không bảo toàn chart/style/công thức của workbook nguồn; xuất lại giá trị.
+
+5. ADVANCED & MODEL DESIGNER (V5)
+Hai tab dùng chung một ModelSpec JSON version 4.
+Advanced: CB-SEM / PLS-SEM / REGRESSION; số dòng, scale, seed, số lần thử,
+VIF tối đa, bootstrap và bộ ngưỡng. Áp dụng cấu hình trước khi chuyển sang vẽ.
+Model Designer: chọn/kéo biến; Nối mũi tên rồi bấm nguồn → đích. Bấm biến/đường
+để sửa thuộc tính; phải bấm Áp dụng thuộc tính. Với REGRESSION, chọn loại
+Đường mới trước khi nối; interaction cần chọn Biến tương tác. Thêm đường linear
+tác động chính trước các đường quadratic/cubic/interaction. Có Undo/Redo, zoom bằng wheel,
+pan bằng chuột giữa, Sắp xếp, Vừa màn hình, mở/lưu JSON, xuất PNG/SVG.
+Mẫu DIRECT (X1/X2 → Y), MEDIATION (X1 → M → Y và các đường trực tiếp),
+POLYNOMIAL (hồi quy có X1²/X1³ và X1×X2). Mẫu thay toàn bộ mô hình; có thể Undo.
+Bấm đúp dòng Model Nodes/Model Edges trong Advanced để mở thuộc tính tương ứng.
+
+Biến: mã Latin duy nhất; 3–10 indicators; thang đo đạt/không đạt, khoảng Alpha,
+R hoặc R² min/max riêng. R/R² chỉ dùng cho biến có đường vào; không dùng cho biến gốc.
+V5 mặc định Alpha .70–.85 cho Advanced; chỉnh .70–.80 nếu muốn và kiểm tra
+xung đột AVE/loading theo số indicators. Quanti nhanh giữ mặc định .70–.80.
+Không đạt chỉ yêu cầu Alpha dưới min; không tự đổi đường thành null.
+Trong Advanced, construct không đạt vẫn thuộc mô hình, không tự loại khỏi SEM.
+CB-SEM với thang đo gần độc lập có thể không định danh/không hội tụ; ứng dụng
+báo không đạt. Để minh họa loại nhóm không đạt khỏi retained SEM, dùng Quanti nhanh.
+
+Đường: loại linear / quadratic / cubic / interaction, chiều +/−, |beta| min/max,
+expected significant/null/free, block1–10. null cần p ≥ Path p (PLS thêm CI chứa0).
+significant cần đúng dấu và beta; p ≤ ngưỡng khi tick bắt buộc (PLS thêm CI không
+chứa0). free chỉ báo cáo, không lọc dấu/beta/p. Một equation cần ít nhất một đường
+có tín hiệu để nhắm R²; các mục tiêu có thể không khả thi đồng thời.
+
+Phạm vi: 2–12 constructs, ≤80 indicators, 100–10.000 dòng (CB ≥200), DAG.
+CB/PLS V5 chỉ reflective, tuyến tính; không formative, higher-order latent,
+multigroup, measurement invariance, vòng phản hồi, hoặc nonlinear SEM.
+REGRESSION hỗ trợ tương tác hai biến, bình phương/lập phương và block phân cấp.
+Tác động bậc cao cần tác động chính; cubic cần quadratic; block tác động chính
+không được sau term bậc cao. CENTERED: powers của điểm chuẩn hóa và center lại.
+ORTHOGONAL: residualize X² trên [1,X], X³ trên [1,X,X²]; báo phép biến đổi.
+Derived Terms là predictors thực tế; Beta theo term chuẩn hóa, không theo đơn vị
+Likert gốc. Block báo R², Adjusted R², ΔR², F change/p change; không ép từng
+ΔR² phải significant. BP/DW/normality là chẩn đoán, không là gate Advanced.
+
+R² & KIỂM ĐỊNH
+- Quanti nhanh: khoảng R/R²/Adjusted R² trên OLS điểm trung bình construct.
+- Advanced CB-SEM: R² latent implied = 1−residual variance / total latent variance.
+  VIF trên tương quan latent implied; fit covariance MLW semopy; DoF/covariance/
+  Heywood là gate bắt buộc; các ngưỡng fit/measurement/path theo tick của người dùng.
+- Advanced PLS-SEM: Ordinary PLS-PM, reflective Mode A, path weighting, iteration
+  tối đa500, tolerance1e-7. R²/VIF trên composite sau hội tụ. Loading/CR/AVE/HTMT/
+  Fornell-Larcker/alpha kiểm tra thực tế; không dùng Chi-square/CFI của CB cho PLS.
+  Bootstrap resample rows và refit cả outer/inner model từng mẫu, align dấu bằng
+  indicator đầu; percentile95% CI; p xấp xỉ normal theo bootstrap SE.
+  Ít nhất95% mẫu bootstrap phải thành công. Bootstrap100–5000, mặc định300
+  cho demo; nhiều mẫu hơn giúp CI ổn định nhưng chậm hơn. Đây không phải PLSc,
+  không hứa trùng SmartPLS, không có Q²/PLSpredict hay global PLS fit gate.
+- REGRESSION: OLS trên trung bình items; R² per equation, VIF tất cả terms,
+  p OLS và HC3 cho mục tiêu đường. CR/AVE trong Measurement chỉ để tham khảo,
+  không dùng như CFA acceptance. Không chạy EFA trong Advanced; dùng Quanti nhanh
+  nếu cần bài thực hành Cronbach/EFA/hồi quy chuẩn.
+- Indirect Effects: product của beta trên các chuỗi linear dài≥2. CB bootstrap
+  tùy tick; PLS dùng chung full-refit bootstrap. CI chỉ báo cáo, không ép indirect
+  phải significant. Regression chỉ có point estimate; không diễn giải nonlinear
+  product như indirect effect. f² PLS là leave-one-term OLS trên scores cố định,
+  không là f² của mô hình PLS refit khi xóa đường; tên báo cáo ghi rõ.
+
+Seed của generation và bootstrap dùng hai stream độc lập. Effective seed được
+lưu trong metadata (kể cả seed trống); đặt seed bằng giá trị đó để tái lập Advanced.
+Khi tất cả gate Required đạt thì dừng sớm. Hết số lần thử: trả BEST EFFORT
+với R cao nhất rồi ít gate fail nhất, vẫn xuất được và giữ nguyên nhãn FAIL.
+Đổi chỉ tiêu/mô hình cần sinh lại trước khi xuất. Chỉ kéo vị trí không làm dữ liệu cũ
+mất hiệu lực. Undo/Redo có thể khôi phục cấu hình đã sinh. Mở JSON không chạy
+phân tích; có thể lưu sơ đồ chưa hoàn thiện và kiểm tra trước khi sinh.
+
+Export Advanced: Data, Construct Scores, Acceptance, Model Nodes/Edges,
+measurement, Pearson, Structural R2, Paths, bootstrap/indirect nếu có, metadata,
+model syntax, term transforms và derived terms cho regression.
+CB export AMOS SAV/CSV như tab nhanh; không tạo .amw. PNG/SVG là hình model;
+JSON lưu sơ đồ để sửa tiếp. VIF Advanced phải ≤ ngưỡng; Quanti nhanh dùng < ngưỡng.
+
+THAM KHẢO KỸ THUẬT
+https://semopy.com/tutorial.html
+https://semopy.com/docs/model.html
+https://semopy.com/docs/stats.html
+https://www.smartpls.com/documentation/algorithms-and-techniques/core-algorithm/pls/
+https://www.smartpls.com/documentation/algorithms-and-techniques/bootstrapping/
+https://www.statsmodels.org/stable/regression.html
+
+Gói V5 là mã nguồn cho repo mới. Đã kiểm tra backend và giao diện Tk trên Linux;
+chưa build/chạy EXE Windows hoặc chạy mô hình trực tiếp trong AMOS/SmartPLS.
+
+Dữ liệu được đánh dấu SYNTHETIC DEMO. Generator chọn mẫu theo tiêu chí kiểm định
+để minh họa bài học; chỉ số p/fit của dữ liệu này không phải bằng chứng khảo sát thực tế.
