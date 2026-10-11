@@ -6,13 +6,15 @@ MCDMStudio teaches numerical multi-criteria methods with an Excel input, method-
 
 | Group | Methods | Input model |
 |---|---|---|
-| Criterion weights | AHP, ANP, SWARA, BWM, Shannon entropy, CRITIC, MEREC, Standard deviation, PSI | Pairwise comparisons/ranked criteria or numeric decision matrix |
-| Alternative ranking | SAW, TOPSIS, MOORA, MULTIMOORA, COPRAS-G, ARAS, WASPAS, VIKOR, ELECTRE I, PROMETHEE II, CoCoSo, EDAS, MARCOS, CODAS, MAIRCA, MABAC, GRA | Numeric alternative × criterion matrix with Benefit/Cost directions |
+| Criterion weights | AHP, ANP, SWARA, BWM, FUCOM, Shannon entropy, CRITIC, MEREC, Standard deviation, PSI | Pairwise comparisons/ranked criteria or numeric decision matrix |
+| Alternative ranking | SAW, TOPSIS, MOORA, MULTIMOORA, COPRAS-G, ARAS, WASPAS, VIKOR, ELECTRE I, PROMETHEE II, CoCoSo, EDAS, MARCOS, CODAS, MAIRCA, MABAC, GRA, PIV | Numeric alternative × criterion matrix with Benefit/Cost directions |
 | Causal / structural | DEMATEL, ISM | DEMATEL direct influence matrix (0–4); ISM SSIM (`V/A/X/O`) |
 
 ## Workbook
 
-Open `Templates/Template/MCDMStudio/MCDM_Input_Template.xlsx` or the synthetic example at `Templates/Demo Data/MCDMStudio/MCDM_Demo_Data.xlsx`. Optional method sheets are included for AHP, SWARA, DEMATEL, ISM, and ANP. Blank method-specific sheets are ignored until filled. The DEMATEL and ISM nodes map to the criterion names; rename them in the sheets to model factors instead.
+Choose the workbook layout for the method family: `Templates/Template/MCDMStudio/MCDM_TOPSIS_Input_Template.xlsx` has alternatives in rows and factors in columns; `MCDM_DEMATEL_Input_Template.xlsx` has the same factors on rows and columns. Matching demo workbooks are under `Templates/Demo Data/MCDMStudio/`. Pale yellow cells are inputs; blue/gray cells are labels or fixed diagonal values. Each workbook has a **Method Guide** sheet mapping each sheet to its methods, and each sheet's A1 cell has a note with its purpose and methods.
+
+Import opens a workbook preview with a sheet selector. Selecting a method opens its primary input sheet, and the sheet list lets you inspect or edit all other sheets. Double-click a value or column name to edit it. **Decision Matrix** is the shared alternative-by-criterion sheet for every ranking method; the selected method label lists all required sheets. Save and calculate writes an edited workbook copy, reloads it, and immediately runs the selected method. Methods such as AHP and SWARA use their own comparison/configuration sheets and do not require a filled Decision Matrix. The results tab places the step list and taller instruction/formula panel on the left; on the right, previous-step data is above the selected step's output. Each method step displays its intermediate matrix or indicator table (for example, TOPSIS distances, AHP CI/CR, or DEMATEL R/C values). Click an output cell to display its value, applicable formula, and source citation. Python audit has its own full-width tab with copy and `.py` / `.txt` export. Changing the method clears the old result trail; calculating replaces it with the selected method's full new trail. The workspace opens maximized with tables sized to the available window.
 
 ## Book coverage and variants
 
@@ -37,8 +39,10 @@ The book also covers LINMAP (Ch. 12), Graph Theoretic Analysis (Ch. 17), grey/fu
 - **CoCoSo:** combines the weighted sum, power measure, and three compromise appraisals. λ defaults to 0.5.
 - **CRITIC / MEREC:** objective weighting methods; unlike AHP/BWM/SWARA, weights are derived from the supplied alternative matrix.
 - **PSI:** derives objective weights from criterion preference variation. Negative preference indices are truncated to zero to satisfy the app’s nonnegative-weight contract; the raw values remain visible for audit.
+- **FUCOM:** takes a complete criterion order and adjacent comparative priorities; an SLSQP optimizer minimizes ratio and transitivity deviations under normalized nonnegative weights.
 - **MABAC:** ranks by signed distance from each criterion’s geometric-mean border approximation area.
 - **GRA:** calculates grey relational coefficients relative to a benefit-oriented ideal sequence, then aggregates them using the selected weights.
+- **PIV:** vector-normalizes, weights, and ranks by summed distance from the direction-aware ideal; lower proximity is better.
 - **CODAS:** τ defaults to 0.02; the value is user-adjustable in the method control.
 
 ## Run and test
@@ -65,3 +69,5 @@ Educational implementation: verify assumptions, judgment consistency, and method
 - Keshavarz-Ghorabaee, M., Zavadskas, E. K., Turskis, Z., & Antuchevičienė, J. (2016). A new combinative distance-based assessment (CODAS) method for multi-criteria decision-making. *Economic Computation and Economic Cybernetics Studies and Research, 50*(3), 25–44.
 - Pamučar, D., & Ćirović, G. (2015). The selection of transport and handling resources in logistics centers using Multi-Attributive Border Approximation area Comparison (MABAC). *Expert Systems with Applications, 42*(6), 3016–3028. https://doi.org/10.1016/j.eswa.2014.11.057
 - Deng, J. (1989). Introduction to grey system theory. *The Journal of Grey System, 1*(1), 1–24.
+- Pamučar, D., Stević, Ž., & Sremac, S. (2018). A new model for determining weight coefficients of criteria in MCDM models: Full Consistency Method (FUCOM). *Symmetry, 10*(9), 393. https://doi.org/10.3390/sym10090393
+- Mufazzal, S., & Muzakkir, S. M. (2018). A new multi-criterion decision making (MCDM) method based on proximity indexed value for minimizing rank reversals. *Computers & Industrial Engineering, 119*, 427–438. https://doi.org/10.1016/j.cie.2018.03.045

@@ -143,6 +143,29 @@ def calculate_psi_weights(criteria,matrix,directions):
     w=preference/preference.sum(); table=pd.DataFrame({'Criterion':criteria,'Mean normalized value':mean,'Preference variation φⱼ':variation,'Preference index Ωⱼ':preference,'Weight ψⱼ':w})
     return w,[Step('1. Normalize decision matrix','Benefit: rᵢⱼ=xᵢⱼ/maxᵢxᵢⱼ; Cost: rᵢⱼ=minᵢxᵢⱼ/xᵢⱼ','Orient criterion values using the PSI ratio normalization.',pd.DataFrame(norm,columns=criteria),'Maniya & Bhatt (2010), PSI'),Step('2. Calculate preference variation','φⱼ=∑ᵢ(rᵢⱼ−r̄ⱼ)²','Measure the variation of each normalized criterion around its mean.',table[['Criterion','Mean normalized value','Preference variation φⱼ']],'Maniya & Bhatt (2010), PSI'),Step('3. Preference index and weights','Ωⱼ=1−φⱼ; ψⱼ=Ωⱼ/∑ₖΩₖ','To satisfy the app’s nonnegative-weight contract, negative Ωⱼ are truncated to zero before normalization; inspect raw Ωⱼ in the table.',table,'Maniya & Bhatt (2010), PSI; nonnegative projection is an implementation safeguard')]
 
+def calculate_fucom_weights(criteria,order,comparative_priorities):
+    """FUCOM weights from ranked criteria and adjacent comparative priorities."""
+    from scipy.optimize import minimize
+    order=list(order); n=len(criteria); phi=np.asarray(comparative_priorities,dtype=float)
+    if len(order)!=n or len(set(order))!=n or set(order)!=set(criteria): raise ValueError('FUCOM order must contain every criterion exactly once, most to least important.')
+    if phi.shape!=(max(0,n-1),) or not np.isfinite(phi).all() or (phi<1).any(): raise ValueError('FUCOM needs one finite adjacent comparative priority ≥1 for every consecutive criterion pair.')
+    if n==1: return np.ones(1),[Step('1. Criterion order','Most important → least important','Only one criterion has weight 1.',pd.DataFrame({'Criterion':order,'Weight':[1.0]}),'Pamučar et al. (2018), FUCOM')]
+    initial=np.ones(n,dtype=float)
+    for i in range(1,n): initial[i]=initial[i-1]/phi[i-1]
+    initial/=initial.sum(); x0=np.r_[initial,1.0]
+    def deviations(x):
+        w=x[:n]; xi=x[-1]; vals=[]
+        for i in range(n-1): vals.extend([xi-(w[i]/w[i+1]-phi[i]),xi+(w[i]/w[i+1]-phi[i])])
+        for i in range(n-2):
+            target=phi[i]*phi[i+1]; vals.extend([xi-(w[i]/w[i+2]-target),xi+(w[i]/w[i+2]-target)])
+        return np.asarray(vals)
+    result=minimize(lambda x:x[-1],x0,method='SLSQP',bounds=[(1e-9,1.0)]*n+[(0.0,10.0)],constraints=[{'type':'eq','fun':lambda x:float(x[:n].sum()-1)},{'type':'ineq','fun':deviations}],options={'maxiter':1000,'ftol':1e-12})
+    if not result.success or not np.isfinite(result.x).all(): raise ValueError(f'FUCOM optimization failed: {result.message}')
+    w=result.x[:n]; xi=float(result.x[-1]); by_name=dict(zip(order,w)); output=np.array([by_name[c] for c in criteria])
+    adjacent=pd.DataFrame({'Rank':np.arange(1,n+1),'Criterion':order,'Priority to next':[*phi,np.nan],'Weight':w})
+    consistency=pd.DataFrame([{'Maximum deviation χ*':xi,'Weight sum':w.sum(),'Adjacent comparisons':len(phi)}])
+    return output,[Step('1. Rank criteria','C₁ ≻ C₂ ≻ … ≻ Cₙ','Order criteria from most to least important.',adjacent[['Rank','Criterion']],'Pamučar, Stević & Sremac (2018), FUCOM, Step 1'),Step('2. Adjacent comparative priorities','φₖ/(ₖ₊₁)=wₖ/wₖ₊₁','Enter preference of each criterion over the next criterion in the ranked list.',adjacent[['Rank','Criterion','Priority to next']],'Pamučar, Stević & Sremac (2018), FUCOM, Step 2'),Step('3. Full-consistency optimization','min χ; |wₖ/wₖ₊₁−φₖ/(ₖ₊₁)|≤χ; |wₖ/wₖ₊₂−φₖ/(ₖ₊₁)φₖ₊₁/(ₖ₊₂)|≤χ; ∑w=1','Minimize deviations from adjacent priorities and their transitive products.',consistency,'Pamučar, Stević & Sremac (2018), FUCOM, Eq. 6'),Step('4. Criterion weights','wⱼ≥0; ∑ⱼwⱼ=1','Return FUCOM weights aligned to the workbook criterion order.',pd.DataFrame({'Criterion':criteria,'FUCOM weight':output}), 'Pamučar, Stević & Sremac (2018), FUCOM')]
+
 def calculate_bwm_weights(criteria,best_idx,worst_idx,best_to_others,others_to_worst):
     from scipy.optimize import linprog
     n=len(criteria); abo=np.asarray(best_to_others,dtype=float); aow=np.asarray(others_to_worst,dtype=float)
@@ -316,6 +339,14 @@ def _run_gra(x,names,criteria,directions,w,rho=0.5):
     normalized_table=pd.DataFrame(np.vstack([norm,reference]),index=[*names,'Reference'],columns=criteria)
     return [Step('1. Normalize and define reference sequence','Benefit-oriented min–max; x₀ⱼ=maxᵢ zᵢⱼ','Create a normalized ideal reference sequence for the criteria.',normalized_table,'Grey Relational Analysis'),Step('2. Absolute deviations','Δᵢⱼ=|x₀ⱼ−zᵢⱼ|','Measure each alternative’s deviation from the reference sequence.',pd.DataFrame(delta,index=names,columns=criteria),'Grey Relational Analysis'),Step('3. Grey relational coefficients',f'ξᵢⱼ=(Δmin+ρΔmax)/(Δᵢⱼ+ρΔmax); ρ={rho:g}','Transform deviations into relational closeness coefficients.',pd.DataFrame(coefficients,index=names,columns=criteria),'Grey Relational Analysis'),Step('4. Grey relational grade and ranking','Γᵢ=∑ⱼwⱼξᵢⱼ','Aggregate criterion coefficients using the supplied weights; higher grade is better.',_scores_table(names,grade,'Grey relational grade'),'Grey Relational Analysis')]
 
+def _run_piv(x,names,criteria,directions,w):
+    den=np.sqrt((x*x).sum(axis=0))
+    if (den<=1e-14).any(): raise ValueError('PIV cannot vector-normalize a criterion whose values are all zero.')
+    norm=x/den; weighted=norm*w
+    ideal=np.array([weighted[:,j].max() if d=='Benefit' else weighted[:,j].min() for j,d in enumerate(directions)])
+    proximity=np.abs(weighted-ideal); total=proximity.sum(axis=1)
+    return [Step('1. Vector normalization','nᵢⱼ=xᵢⱼ/√(∑ᵢxᵢⱼ²)','Normalize each criterion column by its Euclidean norm.',pd.DataFrame(norm,index=names,columns=criteria),'Mufazzal & Muzakkir (2018), PIV, Eq. 9'),Step('2. Weighted normalized values','vᵢⱼ=wⱼnᵢⱼ','Apply criterion weights to normalized performance values.',pd.DataFrame(weighted,index=names,columns=criteria),'Mufazzal & Muzakkir (2018), PIV, Eq. 10'),Step('3. Weighted proximity indices','uᵢⱼ=vmaxⱼ−vᵢⱼ (Benefit); vᵢⱼ−vminⱼ (Cost)','Measure each alternative’s deviation from the direction-specific ideal best.',pd.DataFrame(proximity,index=names,columns=criteria),'Mufazzal & Muzakkir (2018), PIV, Eq. 11'),Step('4. Overall proximity and ranking','dᵢ=∑ⱼuᵢⱼ','Smaller total proximity indicates a closer alternative to the ideal; rank ascending.',_scores_table(names,total,'PIV proximity dᵢ',high_best=False),'Mufazzal & Muzakkir (2018), PIV, Eq. 12')]
+
 def _run_electre1(x,names,criteria,directions,w,c_threshold=None,d_threshold=None):
     """ELECTRE I: concordance/discordance outranking; output is a relation, not a forced total order."""
     den=np.sqrt((x*x).sum(axis=0))
@@ -429,15 +460,15 @@ def _run_anp(weighted_supermatrix,nodes):
     table=pd.DataFrame({'Element':nodes,'Limiting priority':priority}).sort_values('Limiting priority',ascending=False).reset_index(drop=True)
     return priority,[Step('1. Weighted supermatrix','Wᵃʷᵉⁱᵍʰᵗᵉᵈ is column stochastic: ∑ᵢwᵢⱼ=1','This module starts from the weighted supermatrix after cluster weights and local priorities have been combined.',pd.DataFrame(w,index=nodes,columns=nodes),'Chapter 4, §4.3, pp. 66–68'),Step('2. Raise supermatrix to limiting powers','Wᵏ as k→∞','Iterate powers until consecutive matrices converge; periodic/reducible networks may require component-level interpretation.',pd.DataFrame(power,index=nodes,columns=nodes),'Chapter 4, §4.3, p. 68'),Step('3. Limiting priorities','Normalize row averages of the converged limit matrix','Rank nodes by their normalized limiting priorities.',table,'Chapter 4, §4.3, p. 68')]
 
-RANKING_METHODS={'SAW':_run_saw,'TOPSIS':_run_topsis,'MOORA':_run_moora,'MULTIMOORA':_run_multimoora,'COPRAS-G':_run_copras,'ARAS':_run_aras,'WASPAS':_run_waspas,'VIKOR':_run_vikor,'ELECTRE I':_run_electre1,'PROMETHEE II':_run_promethee2,'CoCoSo':_run_cocoso,'EDAS':_run_edas,'MARCOS':_run_marcos,'CODAS':_run_codas,'MAIRCA':_run_mairca,'MABAC':_run_mabac,'GRA':_run_gra}
+RANKING_METHODS={'SAW':_run_saw,'TOPSIS':_run_topsis,'MOORA':_run_moora,'MULTIMOORA':_run_multimoora,'COPRAS-G':_run_copras,'ARAS':_run_aras,'WASPAS':_run_waspas,'VIKOR':_run_vikor,'ELECTRE I':_run_electre1,'PROMETHEE II':_run_promethee2,'CoCoSo':_run_cocoso,'EDAS':_run_edas,'MARCOS':_run_marcos,'CODAS':_run_codas,'MAIRCA':_run_mairca,'MABAC':_run_mabac,'GRA':_run_gra,'PIV':_run_piv}
 
 def get_audit_code(method):
     """Return the exact calculation function and shared guards shown in the UI."""
-    fn={'AHP':calculate_ahp,'SWARA':calculate_swara,'Entropy weights':calculate_entropy_weights,'CRITIC':calculate_critic_weights,'MEREC':calculate_merec_weights,'Standard deviation':calculate_std_weights,'PSI weights':calculate_psi_weights,'BWM':calculate_bwm_weights,
+    fn={'AHP':calculate_ahp,'SWARA':calculate_swara,'Entropy weights':calculate_entropy_weights,'CRITIC':calculate_critic_weights,'MEREC':calculate_merec_weights,'Standard deviation':calculate_std_weights,'PSI weights':calculate_psi_weights,'FUCOM':calculate_fucom_weights,'BWM':calculate_bwm_weights,
         'DEMATEL':_run_dematel,'ISM':_run_ism,'ANP':_run_anp,
         'SAW':_run_saw,'TOPSIS':_run_topsis,'MOORA':_run_moora,'MULTIMOORA':_run_multimoora,
         'COPRAS-G':_run_copras,'ARAS':_run_aras,'WASPAS':_run_waspas,'VIKOR':_run_vikor,
-        'ELECTRE I':_run_electre1,'PROMETHEE II':_run_promethee2,'CoCoSo':_run_cocoso,'EDAS':_run_edas,'MARCOS':_run_marcos,'CODAS':_run_codas,'MAIRCA':_run_mairca,'MABAC':_run_mabac,'GRA':_run_gra}.get(method)
+        'ELECTRE I':_run_electre1,'PROMETHEE II':_run_promethee2,'CoCoSo':_run_cocoso,'EDAS':_run_edas,'MARCOS':_run_marcos,'CODAS':_run_codas,'MAIRCA':_run_mairca,'MABAC':_run_mabac,'GRA':_run_gra,'PIV':_run_piv}.get(method)
     if fn is None: return '# Select a method to inspect its calculation logic.'
     def source_of(obj):
         try: return inspect.getsource(obj)

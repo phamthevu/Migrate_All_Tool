@@ -7,7 +7,7 @@ from MCDMStudio.core.excel_io import DEMO, load_input
 from MCDMStudio.core.methods import (
     RANKING_METHODS, _run_anp, _run_dematel, _run_ism,
     calculate_ahp, calculate_entropy_weights, calculate_swara,
-    calculate_bwm_weights,calculate_critic_weights,calculate_merec_weights,calculate_std_weights,calculate_psi_weights,
+    calculate_bwm_weights,calculate_critic_weights,calculate_merec_weights,calculate_std_weights,calculate_psi_weights,calculate_fucom_weights,
     get_audit_code, run_ranking,
 )
 
@@ -57,6 +57,8 @@ class MCDMStressTests(unittest.TestCase):
             self.assertTrue(np.isfinite(w).all()); self.assertAlmostEqual(w.sum(), 1, places=10)
             w, _ = calculate_psi_weights(criteria, matrix, ['Benefit'] * n)
             self.assertTrue(np.isfinite(w).all()); self.assertAlmostEqual(w.sum(), 1, places=10)
+            w, _ = calculate_fucom_weights(criteria,criteria,[1.2]*(n-1))
+            self.assertTrue(np.isfinite(w).all()); self.assertAlmostEqual(w.sum(), 1, places=8)
             b2o=np.linspace(1,7,n); o2w=np.linspace(7,1,n)
             w, _ = calculate_bwm_weights(criteria,0,n-1,b2o,o2w)
             self.assertTrue(np.isfinite(w).all()); self.assertAlmostEqual(w.sum(), 1, places=8)
@@ -92,7 +94,7 @@ class MCDMStressTests(unittest.TestCase):
             run_ranking('ARAS', [[0, 1], [1, 2]], ['A','B'], ['C1','C2'], ['Benefit','Cost'], [.5,.5])
 
     def test_audit_source_is_exportable_python_for_every_method(self):
-        methods = ['AHP','ANP','SWARA','BWM','Entropy weights','CRITIC','MEREC','Standard deviation','PSI weights','DEMATEL','ISM',*RANKING_METHODS]
+        methods = ['AHP','ANP','SWARA','BWM','FUCOM','Entropy weights','CRITIC','MEREC','Standard deviation','PSI weights','DEMATEL','ISM',*RANKING_METHODS]
         for method in methods:
             with self.subTest(method=method):
                 source = get_audit_code(method)
@@ -101,7 +103,7 @@ class MCDMStressTests(unittest.TestCase):
                 self.assertIn('import numpy as np', source)
 
     def test_audit_functions_execute_on_demo_data(self):
-        d = self.demo; methods = ['AHP','ANP','SWARA','BWM','Entropy weights','CRITIC','MEREC','Standard deviation','PSI weights','DEMATEL','ISM',*RANKING_METHODS]
+        d = self.demo; methods = ['AHP','ANP','SWARA','BWM','FUCOM','Entropy weights','CRITIC','MEREC','Standard deviation','PSI weights','DEMATEL','ISM',*RANKING_METHODS]
         for method in methods:
             with self.subTest(method=method):
                 namespace = {}; exec(compile(get_audit_code(method), f'{method}_audit.py', 'exec'), namespace)
@@ -115,6 +117,7 @@ class MCDMStressTests(unittest.TestCase):
                 elif method == 'MEREC': result = namespace['calculate_merec_weights'](d['criteria'], d['matrix'], d['directions'])
                 elif method == 'Standard deviation': result = namespace['calculate_std_weights'](d['criteria'], d['matrix'], d['directions'])
                 elif method == 'PSI weights': result = namespace['calculate_psi_weights'](d['criteria'], d['matrix'], d['directions'])
+                elif method == 'FUCOM': result = namespace['calculate_fucom_weights'](d['criteria'],d['criteria'],[1.5,1.2,1.1])
                 elif method == 'DEMATEL': result = namespace['_run_dematel'](d['dematel'], d['criteria'])
                 elif method == 'ISM': result = namespace['_run_ism'](d['ism'], d['criteria'])
                 elif method == 'MOORA': result = namespace['_run_moora'](d['matrix'], d['alternatives'], d['criteria'], d['directions'])
@@ -130,6 +133,7 @@ class MCDMStressTests(unittest.TestCase):
                 elif method == 'MAIRCA': result = namespace['_run_mairca'](d['matrix'], d['alternatives'], d['criteria'], d['directions'], np.array(d['weights']))
                 elif method == 'MABAC': result = namespace['_run_mabac'](d['matrix'], d['alternatives'], d['criteria'], d['directions'], np.array(d['weights']))
                 elif method == 'GRA': result = namespace['_run_gra'](d['matrix'], d['alternatives'], d['criteria'], d['directions'], np.array(d['weights']))
+                elif method == 'PIV': result = namespace['_run_piv'](d['matrix'], d['alternatives'], d['criteria'], d['directions'], np.array(d['weights']))
                 else:
                     key = {'SAW':'_run_saw','TOPSIS':'_run_topsis','COPRAS-G':'_run_copras','ARAS':'_run_aras'}[method]
                     result = namespace[key](d['matrix'], d['alternatives'], d['criteria'], d['directions'], np.array(d['weights']))
