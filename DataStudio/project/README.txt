@@ -97,17 +97,14 @@ V5.1 GENERATION UPDATE
 DEMO DATA STUDIO 5.3 — NEW REPOSITORY SOURCE
 
 START
-Windows: install Python 3.10+ with Tcl/Tk, run install.bat, then run.bat.
-Build DataStudio on Windows: build.bat → dist/DataStudio.exe.
-Build all studios and fuzzy calculators: run build_all_windows.bat from the package root.
+Windows source run: install the suite-root requirements.txt once, then run this folder\run.bat. For the complete build, run build_all_windows.bat from the suite root.
+The shared root build_all_windows.bat builds all five studios and fuzzy calculators together.
 Shared templates are in Templates/Template and Templates/Demo Data.
-Linux/macOS: create a venv, activate it, pip install -r requirements.txt,
-then python main.py. Tkinter/Tcl/Tk must be installed by the OS/Python distribution.
+Linux/macOS source run: install the suite-root requirements.txt and run python main.py. Tkinter/Tcl/Tk must be installed by the OS/Python distribution.
 
 REPO
 Extract project/ and use its contents as the root of your new repository.
-Includes .gitignore, requirements.txt, requirements-build.txt, build spec,
-source, user guide, two Excel configuration examples and six model JSON examples.
+Use the suite-root requirements.txt, shared Template and Demo Data library, and build_all_windows.bat.
 No inherited Git history, environment, build output, cache, test/log files.
 Create the remote repo yourself, then git init/add/commit and push as usual.
 

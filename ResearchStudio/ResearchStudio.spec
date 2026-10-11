@@ -1,6 +1,6 @@
 from PyInstaller.utils.hooks import collect_submodules
 hidden=[]
-for pkg in ['keyring.backends','psycopg2','pymysql','boto3','botocore','paramiko','pymongo','azure.storage.blob','google.auth']:
+for pkg in ['keyring.backends','psycopg2','pymysql','boto3','botocore','paramiko','pymongo','azure.storage.blob','google.auth','googleapiclient','google.cloud.bigquery']:
     try:hidden += collect_submodules(pkg)
     except Exception:pass
 

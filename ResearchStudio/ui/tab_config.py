@@ -9,6 +9,7 @@ from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtGui import QColor, QBrush, QFont
 from core.models import ProjectConfig, config_to_dict
 from core.excel_handler import parse_config_excel, generate_default_template
+from core.template_paths import research_template_path
 
 
 class TabConfig(QWidget):
@@ -217,7 +218,7 @@ class TabConfig(QWidget):
             self.txt_file_path.setText(file_name)
 
     def load_and_preview_default(self):
-        default_tpl = Path("templates/Config_Template.xlsx")
+        default_tpl = research_template_path()
         if default_tpl.exists():
             self.txt_file_path.setText(str(default_tpl.resolve()))
 

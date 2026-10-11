@@ -1,9 +1,8 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-if not exist ".venv\Scripts\python.exe" (
-    call "%~dp0setup_windows.bat"
-    if errorlevel 1 exit /b 1
+if exist "..\.build-venv\Scripts\python.exe" (
+  "..\.build-venv\Scripts\python.exe" -m app.main
+) else (
+  py -3 -m app.main
 )
-"%~dp0.venv\Scripts\python.exe" -m app.main
-if errorlevel 1 pause

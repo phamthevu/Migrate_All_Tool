@@ -1,0 +1,44 @@
+# Shared runtime and Windows packaging dependencies for all Studios.
+# DataStudio (Tk), ResearchStudio (PyQt6), MCDMStudio (PyQt6),
+# FuzzyStudio (Tk + calculator modules), MCDMVisualStudio (PySide6).
+# Windows SQL Server connectivity also requires Microsoft ODBC Driver 18.
+
+# Core numerical, Excel, analysis and chart packages
+numpy>=1.24,<3
+pandas>=2.0,<3
+openpyxl>=3.1,<4
+xlrd>=2.0.1,<3
+scipy>=1.11,<2
+scikit-learn>=1.3,<2
+statsmodels>=0.14,<0.15
+semopy==2.3.11
+sympy>=1.12,<2
+numdifftools>=0.9,<1
+threadpoolctl>=3.1,<4
+pyreadstat>=1.3,<2
+Pillow>=10,<13
+XlsxWriter>=3.0
+matplotlib>=3.7,<4
+pyqtgraph>=0.13.3,<1
+networkx>=3.0,<4
+
+# Desktop interfaces
+PyQt6>=6.6,<7
+PySide6>=6.6,<7
+
+# ResearchStudio supported connectors and secure credential storage
+psycopg2-binary>=2.9,<3
+boto3>=1.34,<2
+requests>=2.31,<3
+pyodbc>=5.1,<6
+pymysql>=1.1,<2
+google-api-python-client>=2.140,<3
+google-auth>=2.30,<3
+google-cloud-bigquery>=3.25,<4
+azure-storage-blob>=12.22,<13
+paramiko>=3.4,<4
+pymongo>=4.8,<5
+keyring>=25,<26
+
+# One build toolchain for the complete desktop suite
+pyinstaller>=6.10,<7

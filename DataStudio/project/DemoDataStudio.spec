@@ -2,17 +2,11 @@
 
 from pathlib import Path
 
-template_root = Path(SPECPATH).resolve().parents[1] / 'Templates'
-template_files = [
-    (str(path), str(Path('Templates') / path.relative_to(template_root).parent))
-    for path in template_root.rglob('*') if path.is_file()
-]
-
 a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=template_files,
+    datas=[],
     hiddenimports=['semopy', 'numdifftools', 'pyreadstat', 'PIL.Image', 'PIL.ImageFont',
                    'matplotlib.backends.backend_agg', 'scipy.optimize', 'scipy.linalg'],
     hookspath=[],

@@ -1,8 +1,11 @@
 import pandas as pd
 from pathlib import Path
+from core.template_paths import research_template_path
 
-def generate_default_template(output_path: str = "templates/Config_Template.xlsx"):
-    """Tự động sinh file Excel mẫu chuẩn cho hệ thống MCDM (gọn gàng, linh hoạt)."""
+def generate_default_template(output_path: str | None = None):
+    """Create the default config workbook in the shared Templates library."""
+    output_path = output_path or str(research_template_path())
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     
     # 1. Sheet Factors & Alternatives
     df_factors = pd.DataFrame([

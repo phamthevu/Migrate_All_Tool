@@ -42,11 +42,11 @@ Select **Export figure** from the Visual tab. PNG export prompts for image width
 ## Run
 
 ```bash
-python -m pip install -r requirements.txt
+python -m pip install -r ..\requirements.txt
 python -m app.main
 ```
 
-On Windows, run `setup_windows.bat` once, then `run_windows.bat`. This creates a project-local `.venv` so the app does not accidentally use another project's Python environment.
+Install the suite-root `requirements.txt` once, then run `run_windows.bat`. The complete suite is packaged with `build_all_windows.bat`.
 
 You can also run either command from the project folder; direct script launch also works from the `app` folder or via its full path:
 

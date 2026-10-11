@@ -53,8 +53,8 @@ def _show_df(tree, frame, max_rows=200, max_cols=40):
 
 def _template_path(relative_path):
     """Resolve shared templates in source and PyInstaller builds."""
-    bundled = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parents[3]))
-    return bundled / "Templates" / "Template" / relative_path
+    base = Path(sys.executable).resolve().parent if getattr(sys, "frozen", False) else Path(__file__).resolve().parents[3]
+    return base / "Templates" / "Template" / relative_path
 
 
 def generate_dea_demo(n_dmus=30, n_inputs=2, n_outputs=2, seed=42):

@@ -89,11 +89,9 @@ trên trang cấu hình và properties; canvas vẫn dùng wheel để zoom.
 DEMO DATA STUDIO 5.0
 
 CHẠY / BUILD
-Windows: Python 3.10+ có Tcl/Tk → install.bat → run.bat.
-Các script dùng .venv riêng. CLI: python -m venv .venv; kích hoạt venv;
-python -m pip install -r requirements.txt; python main.py.
-Build DataStudio EXE trên Windows: build.bat → dist/DataStudio.exe.
-Build cả ba studio và các fuzzy calculator: chạy build_all_windows.bat ở thư mục gốc.
+Windows: Python 3.10+ có Tcl/Tk; cài dependency từ requirements.txt tại thư mục gốc bộ suite, sau đó chạy run.bat.
+Build toàn bộ năm Studio và fuzzy calculator: chạy build_all_windows.bat tại thư mục gốc.
+Không còn build/requirements riêng cho từng ứng dụng.
 Không cần driver DB. Linux cần tkinter hệ thống (python3-tk), libTk có font Unicode.
 File Excel cấu hình được mở ngoài ứng dụng; không đóng cứng vào EXE.
 

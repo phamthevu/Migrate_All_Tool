@@ -1,9 +1,8 @@
 @echo off
+setlocal
 cd /d "%~dp0"
-if not exist ".venv\Scripts\python.exe" (
-    echo Run install.bat first.
-    pause
-    exit /b 1
+if exist "..\.build-venv\Scripts\python.exe" (
+  "..\.build-venv\Scripts\python.exe" main.py
+) else (
+  py -3 main.py
 )
-.venv\Scripts\python.exe main.py
-if errorlevel 1 pause
