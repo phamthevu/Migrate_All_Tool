@@ -2,6 +2,7 @@
 setlocal EnableExtensions
 set "ROOT=%~dp0"
 set "PY=%ROOT%.build-venv\Scripts\python.exe"
+set "STAGE=prepare Python environment"
 
 if not exist "%PY%" (
     echo Creating shared build environment. Python 3.10+ and the Python Launcher are required.
@@ -16,33 +17,48 @@ if errorlevel 1 (
 
 "%PY%" -m pip install --upgrade pip
 if errorlevel 1 goto :failed
+set "STAGE=install suite dependencies"
 "%PY%" -m pip install -r "%ROOT%requirements.txt"
 if errorlevel 1 goto :failed
 
 echo.
 echo Running the deterministic MCDMStudio method and stress tests...
+set "STAGE=run MCDMStudio tests"
 cd /d "%ROOT%"
-"%PY%" -m unittest MCDMStudio.tests.test_methods MCDMStudio.tests.test_stress_methods -q
-if errorlevel 1 goto :failed
+if not exist "%ROOT%build" mkdir "%ROOT%build"
+set "TESTLOG=%ROOT%build\MCDMStudio-tests.log"
+"%PY%" -m unittest MCDMStudio.tests.test_methods MCDMStudio.tests.test_stress_methods -v > "%TESTLOG%" 2>&1
+set "TEST_RESULT=%ERRORLEVEL%"
+type "%TESTLOG%"
+if not "%TEST_RESULT%"=="0" goto :failed
 
+set "STAGE=build DataStudio"
 call :build DataStudio "%ROOT%DataStudio\project" DemoDataStudio.spec
 if errorlevel 1 goto :failed
+set "STAGE=build ResearchStudio"
 call :research
 if errorlevel 1 goto :failed
+set "STAGE=build MCDMStudio"
 call :build MCDMStudio "%ROOT%MCDMStudio" MCDMStudio.spec
 if errorlevel 1 goto :failed
+set "STAGE=build MCDMVisualStudio"
 call :build MCDMVisualStudio "%ROOT%MCDMVisualStudio" MCDMVisualStudio.spec
 if errorlevel 1 goto :failed
 
+set "STAGE=build SphericalFuzzy calculator"
 call :fuzzy SphericalFuzzy tools_spherical
 if errorlevel 1 goto :failed
+set "STAGE=build QuantumSpherical calculator"
 call :fuzzy QuantumSpherical tools_quantum
 if errorlevel 1 goto :failed
+set "STAGE=build NeutrosophicZ calculator"
 call :fuzzy NeutrosophicZ tools_neutrosophic
 if errorlevel 1 goto :failed
+set "STAGE=build FuzzyStudio"
 call :build FuzzyStudio "%ROOT%FuzzyStudio" FuzzyStudio.spec
 if errorlevel 1 goto :failed
 
+set "STAGE=copy shared templates"
 for %%A in (DataStudio ResearchStudio MCDMStudio MCDMVisualStudio FuzzyStudio) do (
   if not exist "%ROOT%dist\%%A" mkdir "%ROOT%dist\%%A"
   xcopy "%ROOT%Templates" "%ROOT%dist\%%A\Templates" /E /I /Y >nul
@@ -51,6 +67,7 @@ for %%A in (DataStudio ResearchStudio MCDMStudio MCDMVisualStudio FuzzyStudio) d
 xcopy "%ROOT%FuzzyStudio\VBA Library" "%ROOT%dist\FuzzyStudio\VBA Library" /E /I /Y >nul
 if errorlevel 1 goto :failed
 
+set "STAGE=verify all build outputs"
 for %%A in (DataStudio ResearchStudio MCDMStudio MCDMVisualStudio FuzzyStudio) do (
   if not exist "%ROOT%dist\%%A\%%A.exe" (
     echo Expected executable is missing: "%ROOT%dist\%%A\%%A.exe"
@@ -102,6 +119,7 @@ exit /b %errorlevel%
 
 :failed
 echo.
-echo Build failed. Review the first error, confirm network access, then rerun.
+echo Build failed while trying to: %STAGE%.
+echo Send the complete error text printed above, starting at the first ERROR or Traceback line.
 pause
 exit /b 1

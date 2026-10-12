@@ -19,4 +19,4 @@ Build all apps
 2. Double-click `build_all_windows.bat` and wait for dependency installation, MCDMStudio tests and all PyInstaller builds to finish.
 3. Run each app from `dist\APPNAME\APPNAME.exe`. The `Templates` folder beside each app must stay in place.
 
-The script creates a shared `.build-venv`, installs the deduplicated dependencies from the root `requirements.txt`, runs the MCDMStudio deterministic and stress tests, then builds all apps and the three fuzzy calculators. Build output is under `dist\`. Packaged users do not need Python. Windows executables must be built on Windows; this source workspace is not a Windows build host.
+The script creates a shared `.build-venv`, installs the deduplicated dependencies from the root `requirements.txt`, runs the MCDMStudio deterministic and stress tests, then builds all apps and the three fuzzy calculators. The test output is saved to `build\MCDMStudio-tests.log` and printed to the console; if a test fails, include that log when reporting the error. Build output is under `dist\`. Packaged users do not need Python. Windows executables must be built on Windows; this source workspace is not a Windows build host.

@@ -103,7 +103,11 @@ class MCDMMethodTests(unittest.TestCase):
         steps=run_ranking('TOPSIS',self.data['matrix'],self.data['alternatives'],self.data['criteria'],self.data['directions'],self.data['weights'])
         with tempfile.TemporaryDirectory() as temp:
             out=Path(temp)/'steps.xlsx'; write_results(out,'TOPSIS',self.data,self.data['weights'],steps)
-            sheets=load_workbook(out,read_only=True).sheetnames
+            workbook=load_workbook(out,read_only=True)
+            try:
+                sheets=workbook.sheetnames
+            finally:
+                workbook.close()
             self.assertEqual(len(sheets),len(steps)+3)
             self.assertIn('Summary',sheets); self.assertIn('Input Matrix',sheets)
 
