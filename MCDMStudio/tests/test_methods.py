@@ -1,12 +1,14 @@
 import tempfile
+import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import numpy as np
 from openpyxl import load_workbook
 
 from MCDMStudio.core.excel_io import DEMATEL_DEMO, DEMATEL_TEMPLATE, DEMO, TEMPLATE, generate_template, load_input, method_input_preview, save_edited_input, save_workbook_edits, write_results
-from MCDMStudio.core.methods import calculate_ahp, calculate_swara, run_ranking
+from MCDMStudio.core.methods import calculate_ahp, calculate_swara, get_audit_code, run_ranking
 
 class MCDMMethodTests(unittest.TestCase):
     @classmethod
@@ -110,5 +112,15 @@ class MCDMMethodTests(unittest.TestCase):
                 workbook.close()
             self.assertEqual(len(sheets),len(steps)+3)
             self.assertIn('Summary',sheets); self.assertIn('Input Matrix',sheets)
+
+    def test_audit_source_fallback_reads_bundled_methods_file(self):
+        source=Path(__file__).resolve().parents[1]/'core'/'methods.py'
+        with tempfile.TemporaryDirectory() as temp:
+            bundled_core=Path(temp)/'core'; bundled_core.mkdir()
+            (bundled_core/'methods.py').write_bytes(source.read_bytes())
+            with patch.object(sys,'_MEIPASS',temp,create=True), patch('inspect.getsource',side_effect=OSError('frozen source unavailable')):
+                code=get_audit_code('TOPSIS')
+        self.assertIn('def _run_topsis',code)
+        self.assertIn('TOPSIS',code)
 
 if __name__=='__main__': unittest.main()

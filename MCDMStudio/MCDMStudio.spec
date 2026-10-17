@@ -8,7 +8,9 @@ a = Analysis(
     ['main.py'],
     pathex=[str(root)],
     binaries=[],
-    datas=[],
+    # The source is required by the Python-audit tab when PyInstaller's
+    # frozen modules do not expose inspectable source code.
+    datas=[(str(root / 'core' / 'methods.py'), 'core')],
     hiddenimports=collect_submodules('scipy.optimize'),
     hookspath=[],
     hooksconfig={},

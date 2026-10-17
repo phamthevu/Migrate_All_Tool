@@ -5,12 +5,12 @@ Requirements
 - Python 3.10+ installed with the Windows Python Launcher (py)
 - Internet access for the first dependency installation
 
-Build
-1. Extract the complete source ZIP and keep Templates beside the MCDMStudio folder.
-2. Double-click MCDMStudio/build_windows.bat.
-3. Wait for the tests and PyInstaller build to finish.
-4. Run MCDMStudio/dist/MCDMStudio.exe. Keep its Templates folder beside the executable.
+Build only MCDMStudio
+1. Extract the MCDMStudio-only ZIP. Keep the `MCDMStudio` and `Templates` folders together.
+2. Double-click `MCDMStudio/build_windows.bat`.
+3. Wait for the calculation/export tests and PyInstaller build to finish.
+4. Run `MCDMStudio/dist/MCDMStudio.exe`. Keep its `Templates` folder beside the executable.
 
-The script creates an isolated MCDMStudio/.build-venv, installs only the dependencies needed for this app, runs both method test suites, and creates a one-file Windows executable. The TOPSIS and DEMATEL blank templates and demo workbooks are copied next to the executable because the app reads them at runtime.
+The script creates an isolated `MCDMStudio/.build-venv`, installs only this app's dependencies, runs both MCDM test suites, and creates a one-file Windows executable. The tests include a frozen-app fallback check for the Python audit source. Test output is printed and saved to `build/MCDMStudio-tests.log`. The TOPSIS and DEMATEL templates and demo workbooks are copied next to the executable because the app reads them at runtime.
 
 Build the Windows executable on Windows. PyInstaller does not cross-build a Windows executable from Linux or macOS.
